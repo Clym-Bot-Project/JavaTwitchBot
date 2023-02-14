@@ -1,4 +1,4 @@
-package main.inputs.Twitch4J;
+package main.Twitch4J;
 
 import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;

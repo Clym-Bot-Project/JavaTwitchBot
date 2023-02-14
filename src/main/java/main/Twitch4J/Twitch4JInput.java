@@ -1,4 +1,4 @@
-package main.inputs.Twitch4J;
+package main.Twitch4J;
 
 import com.github.philippheuer.credentialmanager.domain.OAuth2Credential;
 import com.github.philippheuer.events4j.simple.SimpleEventHandler;

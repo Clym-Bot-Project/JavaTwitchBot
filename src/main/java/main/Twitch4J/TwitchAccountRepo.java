@@ -1,4 +1,4 @@
-package main.inputs.Twitch4J;
+package main.Twitch4J;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.repository.CrudRepository;

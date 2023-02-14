@@ -2,10 +2,8 @@ package main.system.commandSystem.repositories;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import main.system.commandSystem.repositories.TwitchUserPermissions;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.StringJoiner;
 
 @Converter

@@ -28,8 +28,8 @@ public class EventDispatcher {
     private static final Set<Method> eventHandler = scanForSubscriber();
 
     private static Set<Method> scanForSubscriber() {
-//        Reflections reflections = new Reflections("main.modules", Scanners.MethodsAnnotated);
-        Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages("main.modules").addScanners(Scanners.MethodsAnnotated));
+//        Reflections reflections = new Reflections("main.main.modules", Scanners.MethodsAnnotated);
+        Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages("main.main.modules").addScanners(Scanners.MethodsAnnotated));
         Set<Method> methods = reflections.getMethodsAnnotatedWith(Subscribe.class);
         //Die Methoden müssen static sein und dürfen nur einen Parameter haben,
         // und dieser Parameter muss gleich mit der Klasse in der Annotation sein

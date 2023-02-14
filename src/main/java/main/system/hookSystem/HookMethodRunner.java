@@ -47,7 +47,7 @@ public class HookMethodRunner {
     }
 
     private static Set<Method> scanForHooks() {
-        Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages("main.modules").addScanners(Scanners.MethodsAnnotated));
+        Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages("main.main.modules").addScanners(Scanners.MethodsAnnotated));
         Set<Method> methods = reflections.getMethodsAnnotatedWith(Hook.class);
         //Die Methoden müssen static sein und müssen als ersten Parameter die message haben und danach eine beliebige Anzahl von Strings
         Set<Method> collect = methods.stream()
