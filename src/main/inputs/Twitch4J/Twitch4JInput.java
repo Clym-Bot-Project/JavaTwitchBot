@@ -128,6 +128,11 @@ public class Twitch4JInput implements TwitchBotInput {
     }
 
     @Override
+    public String threadName() {
+        return "TwitchReading";
+    }
+
+    @Override
     public boolean shutdown() {
         TwitchAccount account = new TwitchAccount(oAuth2Credential.getUserId(), oAuth2Credential.getRefreshToken(), "primary");
         TwitchAccount.repo.save(account);

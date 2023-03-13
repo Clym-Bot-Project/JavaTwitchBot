@@ -39,9 +39,14 @@ public class Application {
     @PreDestroy
     @PreRemove
     public static void shutdown() {
-        Instant start = Instant.now();
-        StopWatch time = new StopWatch(StopWatch.TYPE.SHUTDOWN);
-        InputManager.shutDownAllInputs();
-        time.close();
+        try {
+
+            Instant start = Instant.now();
+            StopWatch time = new StopWatch(StopWatch.TYPE.SHUTDOWN);
+            InputManager.shutDownAllInputs();
+            time.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

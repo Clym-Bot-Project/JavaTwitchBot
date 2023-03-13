@@ -8,8 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class InputManager {
@@ -24,17 +26,21 @@ public class InputManager {
     public static void startAllInputs() {
         logger.info("Starting up Inputs...");
         int iSize = inputSet.size();
-//        checkConfigs();
+        checkConfigs();
         HashSet<String> failing = new HashSet<>();
         HashSet<TwitchBotInput> workSet = inputSet;
 
-        for (TwitchBotInput input : workSet) {
+        Iterator<TwitchBotInput> iterator = workSet.iterator();
+        while (iterator.hasNext()) {
+            TwitchBotInput input = iterator.next();
             try {
-                input.run();
+                new Thread(input, "INPUT-" + input.threadName()).start();
+                onSpinWaitTimeout(input, 10000);
                 if (!input.running())
-                    throw new RuntimeException("General startup Exception!");
+                    throw new RuntimeException("Input did not start or keep running after trying to start it!");
             } catch (RuntimeException e) {
                 failing.add(input.getClass().getName());
+                iterator.remove();
                 workSet.remove(input);
                 logger.error("Unable to Start Input: {} because:", input.getClass().getName(), e);
             }
@@ -50,12 +56,23 @@ public class InputManager {
         running = true;
     }
 
+    private static void onSpinWaitTimeout(TwitchBotInput input, int seconds) {
+        Instant end = Instant.now().plusSeconds(seconds);
+        while (!input.running() && Instant.now().isBefore(end))
+            Thread.onSpinWait();
+    }
+
     private static HashSet<String> checkConfigs() {
         int iSize = inputSet.size();
         HashSet<TwitchBotInput> workSet = inputSet;
         HashSet<String> failing = new HashSet<>();
-        for (TwitchBotInput input : workSet) {
+
+        Iterator<TwitchBotInput> iterator = workSet.iterator();
+        while (iterator.hasNext()) {
+            TwitchBotInput input = iterator.next();
+
             if (!input.checkConfiguration()) {
+                iterator.remove();
                 workSet.remove(input);
                 failing.add(input.getClass().getName());
             }
@@ -71,21 +88,25 @@ public class InputManager {
     }
 
     public static void shutDownAllInputs() {
+        //TODO kill any Inputs if they do not shut down after a certain time
         waitIfStillStarting();
         logger.info("Starting to shutdown the Inputs...");
         HashSet<TwitchBotInput> workSet = inputSet;
         HashSet<String> notProperly = new HashSet<>();
         int iSize = inputSet.size();
 
-        for (TwitchBotInput input : workSet) {
+        Iterator<TwitchBotInput> iterator = workSet.iterator();
+        while (iterator.hasNext()) {
+            TwitchBotInput input = iterator.next();
             try {
                 if (!input.shutdown()) {
                     throw new RuntimeException("Shutdown routine unsuccessful!");
                 }
-            } catch (RuntimeException e) {
+            } catch (Exception e) {
                 notProperly.add(input.getClass().getName());
                 logger.error("Unable to properly shutdown Input: {} because: {}", input.getClass().getName(), e);
             }
+            iterator.remove();
             workSet.remove(input);
         }
 

@@ -11,4 +11,6 @@ public interface TwitchBotInput extends Runnable {
 
     boolean running();
 
+    String threadName();
+
 }
